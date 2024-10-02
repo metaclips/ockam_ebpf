@@ -1,0 +1,21 @@
+Changelog-INCOMING.md
+.env
+.vagrant
+.envrc
+.builder
+.apple-codesign
+CMakeCache.txt
+CMakeFiles
+cmake_install.cmake
+*.a
+*.DS_store
+*.gch
+.idea
+.tool-versions
+.adr-dir
+target
+*.ticket
+vendor
+# nix build
+/result*
+.home
