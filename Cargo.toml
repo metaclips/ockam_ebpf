@@ -18,10 +18,11 @@ include = ["../ockam_ebpf"]
 
 [features]
 default = []
-prebuilt = ["reqwest", "url"]
+# Build eBPF instead of downloading from artifacts
+build = []
 
 [build-dependencies]
-reqwest = { version = "0.12", default-features = false, features = ["rustls-tls-native-roots", "blocking"], optional = true }
-url = { version = "2.5.2", optional = true }
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls-native-roots", "blocking"] }
+url = { version = "2.5.2" }
 
 [lib]

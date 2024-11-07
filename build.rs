@@ -1,6 +1,6 @@
 use std::path::PathBuf;
 
-#[cfg(not(feature = "prebuilt"))]
+#[cfg(feature = "build")]
 fn build_ebpf() {
     println!("cargo:rerun-if-changed=./ockam_ebpf_impl");
 
@@ -27,18 +27,14 @@ fn build_ebpf() {
     };
 
     if !output.status.success() {
-        if let Ok(stderr) = String::from_utf8(output.stderr) {
-            panic!("Couldn't compile eBPF: {}", stderr.trim());
-        } else {
-            panic!("Couldn't compile eBPF");
-        }
+        panic!("Couldn't compile eBPF");
     }
 
     let build_output_file = target_dir.join("bpfel-unknown-none/release/ockam_ebpf");
     std::fs::copy(build_output_file, output_file).expect("Couldn't copy ockam_ebpf file");
 }
 
-#[cfg(feature = "prebuilt")]
+#[cfg(not(feature = "build"))]
 fn download_ebpf() {
     use reqwest::blocking::Client;
     use std::env;
@@ -96,9 +92,9 @@ fn download_ebpf() {
 }
 
 fn main() {
-    #[cfg(feature = "prebuilt")]
+    #[cfg(not(feature = "build"))]
     download_ebpf();
 
-    #[cfg(not(feature = "prebuilt"))]
+    #[cfg(feature = "build")]
     build_ebpf();
 }
