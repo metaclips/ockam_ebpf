@@ -47,7 +47,7 @@ fn download_ebpf() {
     use std::time::Duration;
     use url::Url;
 
-    const VERSION: &str = "v0.1.0";
+    const VERSION: &str = "v0.2.0";
 
     let out_dir = env::var("OUT_DIR").unwrap();
 
