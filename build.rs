@@ -12,6 +12,11 @@ fn build_ebpf() {
 
     let target_dir = out_dir.join("ebpf");
 
+    // Delete the target dir for eBPF crate otherwise it doesn't want to recompile after files are
+    // updated
+    _ = std::fs::remove_dir_all(&target_dir);
+    std::fs::create_dir(&target_dir).unwrap();
+
     let output = Command::new("cargo")
         .current_dir(PathBuf::from("./ockam_ebpf_impl"))
         .env_remove("RUSTUP_TOOLCHAIN")
