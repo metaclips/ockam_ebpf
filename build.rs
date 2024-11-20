@@ -47,13 +47,13 @@ fn download_ebpf() {
     use std::time::Duration;
     use url::Url;
 
-    const VERSION: &str = "v0.2.0";
+    let version = format!("v{}", env::var("CARGO_PKG_VERSION").unwrap());
 
     let out_dir = env::var("OUT_DIR").unwrap();
 
     let output_versioned = PathBuf::from_str(&out_dir)
         .unwrap()
-        .join(format!("ockam_ebpf_{VERSION}"));
+        .join(format!("ockam_ebpf_{version}"));
     let output_file = PathBuf::from_str(&out_dir).unwrap().join("ockam_ebpf");
 
     // Check if we already downloaded that file
@@ -63,7 +63,7 @@ fn download_ebpf() {
     }
 
     let url = format!(
-        "https://github.com/build-trust/ockam-ebpf/releases/download/{VERSION}/ockam_ebpf",
+        "https://github.com/build-trust/ockam-ebpf/releases/download/{version}/ockam_ebpf",
     );
 
     let url = Url::parse(&url).unwrap();
