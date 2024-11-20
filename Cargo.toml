@@ -1,6 +1,6 @@
 [package]
 name = "ockam_ebpf"
-version = "0.2.0"
+version = "0.3.0"
 authors = ["Ockam Developers"]
 categories = ["network-programming"]
 edition = "2021"
