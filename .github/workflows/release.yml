@@ -7,6 +7,9 @@ on:
         description: 'Tag for the release'
         required: true
 
+permissions: 
+  contents: write
+
 env:
   BINARY_ROOT_PATH: ockam_ebpf_impl
 
@@ -15,22 +18,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@3ebd1aebb47f95493b62de6eec0cac3cd74e50a9
 
-      - name: Install Rust
-        uses: actions-rs/toolchain@88dc2356392166efad76775c878094f4e83ff746
-        with:
-          toolchain: stable
-          profile: minimal
-          override: true
+      - name: Checkout Repository
+        uses: actions/checkout@cbb722410c2e876e24abbe8de2cc27693e501dcb
 
       - name: Build ockam_ebpf crate
+        shell: nix shell nixpkgs#llvm nixpkgs#rustup nixpkgs#cargo --command bash {0}
         working-directory: ${{ env.BINARY_ROOT_PATH }}
-        run: cargo build --release
+        run: |
+          rustup install stable
+          rustup toolchain install nightly --component rust-src
+          cargo install bpf-linker
+          cargo build --release
 
       - name: Create Release
         working-directory: ${{ env.BINARY_ROOT_PATH }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "Creating release ${{ github.event.inputs.tag }}"
           gh release create ${{ github.event.inputs.tag }} ./target/bpfel-unknown-none/release/ockam_ebpf -t ${{ github.event.inputs.tag }} -n "Release ${{ github.event.inputs.tag }} --latest"
