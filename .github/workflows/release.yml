@@ -1,0 +1,36 @@
+name: Release ockam_ebpf
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag for the release'
+        required: true
+
+env:
+  BINARY_ROOT_PATH: ockam_ebpf_impl
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Install Rust
+        uses: actions-rs/toolchain@88dc2356392166efad76775c878094f4e83ff746
+        with:
+          toolchain: stable
+          profile: minimal
+          override: true
+
+      - name: Build ockam_ebpf crate
+        working-directory: ${{ env.BINARY_ROOT_PATH }}
+        run: cargo build --release
+
+      - name: Create Release
+        working-directory: ${{ env.BINARY_ROOT_PATH }}
+        run: |
+          echo "Creating release ${{ github.event.inputs.tag }}"
+          gh release create ${{ github.event.inputs.tag }} ./target/bpfel-unknown-none/release/ockam_ebpf -t ${{ github.event.inputs.tag }} -n "Release ${{ github.event.inputs.tag }} --latest"
